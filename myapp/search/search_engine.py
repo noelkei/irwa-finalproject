@@ -1,36 +1,29 @@
-import random
 import numpy as np
-
 from myapp.search.objects import Document
-
-
-def dummy_search(corpus: dict, search_id, num_results=20):
-    """
-    Just a demo method, that returns random <num_results> documents from the corpus
-    :param corpus: the documents corpus
-    :param search_id: the search id
-    :param num_results: number of documents to return
-    :return: a list of random documents from the corpus
-    """
-    res = []
-    doc_ids = list(corpus.keys())
-    docs_to_return = np.random.choice(doc_ids, size=num_results, replace=False)
-    for doc_id in docs_to_return:
-        doc = corpus[doc_id]
-        res.append(Document(pid=doc.pid, title=doc.title, description=doc.description,
-                            url="doc_details?pid={}&search_id={}&param2=2".format(doc.pid, search_id), ranking=random.random()))
-    return res
-
+from myapp.search import algorithms  # Import algorithms module
 
 class SearchEngine:
-    """Class that implements the search engine logic"""
-
-    def search(self, search_query, search_id, corpus):
+    """Implements the search engine logic using various search algorithms."""
+    def search(self, search_query: str, search_id: int, corpus: dict):
         print("Search query:", search_query)
-
-        results = []
-        ### You should implement your search logic here:
-        results = dummy_search(corpus, search_id)  # replace with call to search algorithm
-
-        # results = search_in_corpus(search_query)
-        return results
+        # Perform the search using the implemented algorithm
+        results = algorithms.search_in_corpus(search_query, corpus, search_id)
+        # Convert results to list of Document or ResultItem objects if needed
+        # Here, results is a list of dict or Pydantic models; ensure consistent output
+        final_results = []
+        for item in results:
+            # If the algorithm returned a dict (fallback or default), convert to Document for consistency
+            if isinstance(item, dict):
+                # We use Document model to leverage existing fields (unknown fields like ranking will be ignored by BaseModel)
+                try:
+                    res_doc = Document(**item)
+                except Exception:
+                    # In case Document cannot take ranking, remove it and retry
+                    item_copy = item.copy()
+                    item_copy.pop("ranking", None)
+                    res_doc = Document(**item_copy)
+                final_results.append(res_doc)
+            else:
+                # If already a Document/ResultItem (Pydantic model), just append
+                final_results.append(item)
+        return final_results

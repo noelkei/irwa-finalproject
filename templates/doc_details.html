@@ -1,18 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Document Detail - IRWA Search Engine</title>
-</head>
-<body>
-<div><a href="/" >Home</a></div>
-<div><a href="/stats" >Stats</a></div>
-<div><a href="/dashboard" >Dashboard</a></div>
-<h1>Document Detail Page</h1>
-<p>This is a placeholder for document details.</p>
-<p>Here you can display more information about the document.</p>
-<p>For example, you might show the full text of the document, metadata, or other relevant details.</p>
-<p>You can also include links to related documents or resources.</p>
-<p>Feel free to customize this page to fit the needs of your application.</p>
-</body>
-</html>
+{% extends "base.html" %}
+{% block page_title %}{{ page_title }}{% endblock %}
+{% block content %}
+    {% if doc %}
+    <h3>{{ doc.title }}</h3>
+    {% if doc.images and doc.images[0] %}
+    <!-- Display product image if available -->
+    <p><img src="{{ doc.images[0] }}" alt="{{ doc.title }}" style="max-width:200px; max-height:200px;"></p>
+    {% endif %}
+    <p><strong>Brand:</strong> {{ doc.brand if doc.brand else "N/A" }}</p>
+    <p><strong>Category:</strong> {{ doc.category }}{% if doc.sub_category %} &raquo; {{ doc.sub_category }}{% endif %}</p>
+    {% if doc.selling_price or doc.actual_price %}
+    <p>
+        <strong>Price:</strong>
+        {% if doc.selling_price %}€{{ "%.2f"|format(doc.selling_price) }}{% else %}€{{ "%.2f"|format(doc.actual_price) }}{% endif %}
+        {% if doc.discount %} <small>(Discount: {{ doc.discount }}%)</small>{% endif %}
+    </p>
+    {% endif %}
+    {% if doc.average_rating %}
+    <p><strong>Average Rating:</strong> {{ doc.average_rating }}/5</p>
+    {% endif %}
+    <p><strong>Description:</strong> {{ doc.description }}</p>
+    <hr>
+    {% if rag_detail %}
+    <div class="mt-4 p-3" style="border: 1px solid #ccc; border-radius: 5px; background-color: #f9f9f9;">
+        <h5>AI-Generated Analysis:</h5>
+        <p>{{ rag_detail }}</p>
+    </div>
+    {% endif %}
+    {% else %}
+    <p><em>No document details available.</em></p>
+    {% endif %}
+{% endblock %}
