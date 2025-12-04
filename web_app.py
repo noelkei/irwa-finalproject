@@ -15,18 +15,24 @@ load_dotenv()
 # --------------------------
 # RAG MODE SELECTOR
 # --------------------------
-if len(sys.argv) > 1:
-    mode = sys.argv[1].strip().lower()
-    if mode in ("template_rag", "baseline", "professor"):
-        RAGGenerator.MODE = "template_rag"
-        print("➡️  Using BASELINE RAG (professor version)")
-    else:
-        RAGGenerator.MODE = "improved"
-        print("➡️  Using IMPROVED RAG")
+mode = "improved"  # default
+
+# Accept BOTH styles:
+# python web_app.py template_rag
+# python web_app.py --rag-mode=template_rag
+for arg in sys.argv[1:]:
+    if arg.startswith("--rag-mode="):
+        mode = arg.split("=", 1)[1].strip().lower()
+    elif arg.lower() in ("template_rag", "baseline", "professor", "improved"):
+        mode = arg.lower()
+
+# Normalize modes
+if mode in ("template_rag", "baseline", "professor"):
+    RAGGenerator.MODE = "template_rag"
+    print("➡️  Using BASELINE RAG (professor version)")
 else:
     RAGGenerator.MODE = "improved"
-    print("➡️  Default: Using IMPROVED RAG")
-
+    print("➡️  Using IMPROVED RAG")
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev-key")
