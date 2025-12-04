@@ -49,23 +49,18 @@ The system will:
 
 data/fashion_products_dataset_clean.csv
 
-
----
-
-## 🧪 Virtual Environment Setup
-
-### 1. Create venv
-```bash
+🧪 Virtual Environment Setup
+1. Create venv
 virtualenv irwa_venv
 
 2. Activate it
 
-Mac/Linux:
+Mac/Linux
 
 source irwa_venv/bin/activate
 
 
-Windows:
+Windows
 
 irwa_venv\Scripts\activate.bat
 
@@ -88,7 +83,7 @@ GROQ_MODEL=llama-3.1-8b-instant
 
 🚀 Running the Web App
 
-From project root:
+From the project root:
 
 ▶️ Default (uses improved RAG)
 python web_app.py
@@ -116,11 +111,11 @@ exact-title boosting
 
 Rank position tracking passed to analytics
 
-Optimized preprocessing for 28k products
+Optimized preprocessing for ~28k products
 
 🤖 RAG (Retrieval-Augmented Generation)
 
-Two interchangeable systems:
+Two interchangeable systems are available:
 
 1. Improved RAG (default)
 
@@ -134,13 +129,14 @@ refined prompts
 
 clearer structure & reasoning
 
-graceful handling of "no good products"
+graceful handling of “no good products”
 
-2. Template RAG (professor version)
+2. Template RAG (professor’s version)
 
-Matches the original template functionality exactly.
+Matches the original boilerplate functionality exactly.
 
 Select via command line:
+
 python web_app.py --rag-mode=template
 python web_app.py --rag-mode=improved
 
@@ -188,7 +184,7 @@ term frequency
 
 ✔ Dashboard Visualizations
 
-At:
+Accessible at:
 
 /dashboard
 /stats
@@ -226,20 +222,20 @@ Document view bar chart (Altair)
 
 All required features from Part 4 are implemented:
 
-UI
+Complete user interface
 
-retrieval algorithms
+Retrieval algorithms
 
-improved RAG + baseline RAG
+Improved RAG + baseline RAG
 
-full analytics (session, request, click, dwell)
+Full analytics (session, request, clicks, dwell time)
 
-dashboard with charts
+Dashboard with charts
 
-The teacher only needs:
+To run the project, the evaluator only needs to:
 
-Place dataset in data/
+Place the dataset in the data/ folder
 
-Add personal .env with their GROQ API key
+Add their personal .env with the GROQ API key
 
 Everything works out of the box.
