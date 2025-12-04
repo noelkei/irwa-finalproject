@@ -49,193 +49,196 @@ The system will:
 
 data/fashion_products_dataset_clean.csv
 
-🧪 Virtual Environment Setup
-1. Create venv
+Here is the **clean, final README section in pure Markdown** — **NOT inside a code block**, ready to paste directly into your README.md.
+
+---
+
+## 🧪 Virtual Environment Setup
+
+### 1. Create venv
+
+```bash
 virtualenv irwa_venv
+```
 
-2. Activate it
+### 2. Activate it
 
-Mac/Linux
+**Mac/Linux**
 
+```bash
 source irwa_venv/bin/activate
+```
 
+**Windows**
 
-Windows
-
+```bash
 irwa_venv\Scripts\activate.bat
+```
 
-📦 Install Dependencies
+---
+
+## 📦 Install Dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-🔑 Environment Variables
+---
 
-Create a .env file in the project root:
+## 🔑 Environment Variables
 
+Create a `.env` file in the project root:
+
+```
 SECRET_KEY=your-secret-key
 DEBUG=True
 DATA_FILE_PATH=data/fashion_products_dataset.json
 
 GROQ_API_KEY=your-groq-api-key
 GROQ_MODEL=llama-3.1-8b-instant
+```
 
+`.env` is ignored by git and must **never** be uploaded.
 
-.env is ignored by git and must never be uploaded.
+---
 
-🚀 Running the Web App
+## 🚀 Running the Web App
 
 From the project root:
 
-▶️ Default (uses improved RAG)
+### ▶️ Default (uses improved RAG)
+
+```bash
 python web_app.py
+```
 
-▶️ Force improved RAG
+### ▶️ Force improved RAG
+
+```bash
 python web_app.py --rag-mode=improved
+```
 
-▶️ Use professor template RAG
+### ▶️ Use professor template RAG
+
+```bash
 python web_app.py --rag-mode=template
+```
 
+If no flag is used → **improved RAG is the default**.
 
-If no flag is used → improved RAG is the default.
+---
 
-🔍 Search Engine Features
+## 🔍 Search Engine Features
 
-TF-IDF retrieval with:
+* TF-IDF retrieval with:
 
-synonym-based query expansion
+  * synonym-based query expansion
+  * stopword removal
+  * stemming
+  * exact-title boosting
+* Rank position tracking passed to analytics
+* Optimized preprocessing for ~28k products
 
-stopword removal
+---
 
-stemming
-
-exact-title boosting
-
-Rank position tracking passed to analytics
-
-Optimized preprocessing for ~28k products
-
-🤖 RAG (Retrieval-Augmented Generation)
+## 🤖 RAG (Retrieval-Augmented Generation)
 
 Two interchangeable systems are available:
 
-1. Improved RAG (default)
+### 1. Improved RAG (default)
 
 Uses:
 
-extended metadata (brand, category, price, rating)
+* extended metadata (brand, category, price, rating)
+* description snippets
+* refined prompts
+* clearer structure & reasoning
+* graceful handling of *“no good products”*
 
-description snippets
-
-refined prompts
-
-clearer structure & reasoning
-
-graceful handling of “no good products”
-
-2. Template RAG (professor’s version)
+### 2. Template RAG (professor’s version)
 
 Matches the original boilerplate functionality exactly.
 
 Select via command line:
 
+```bash
 python web_app.py --rag-mode=template
 python web_app.py --rag-mode=improved
+```
 
-📊 Web Analytics
+---
+
+## 📊 Web Analytics
 
 The system tracks:
 
-✔ Sessions
+### ✔ Sessions
 
-session id
+* session id
+* IP
+* user agent
+* timestamps
 
-IP
+### ✔ HTTP Request Logging
 
-user agent
+* path
+* method
+* query string
+* number of terms
+* browser & device detection
 
-timestamps
+### ✔ Click Logging
 
-✔ HTTP Request Logging
+* document clicked
+* rank of the document in results
+* query used
+* dwell time (time before returning)
 
-path
+### ✔ Query Statistics
 
-method
+* query frequency
+* term frequency
 
-query string
-
-number of terms
-
-browser & device detection
-
-✔ Click Logging
-
-document clicked
-
-rank of the document in results
-
-query used
-
-dwell time (time before returning)
-
-✔ Query Statistics
-
-query frequency
-
-term frequency
-
-✔ Dashboard Visualizations
+### ✔ Dashboard Visualizations
 
 Accessible at:
 
+```
 /dashboard
 /stats
-
+```
 
 Includes:
 
-Total sessions
+* Total sessions
+* Total clicks
+* Total requests
+* Avg dwell time
+* Top clicked products
+* Most frequent queries
+* Top terms
+* Browser distribution (Chart.js)
+* Device distribution
+* Rank distribution
+* Dwell time histogram
+* Clicks per hour
+* Document view bar chart (Altair)
 
-Total clicks
+---
 
-Total requests
+## 📝 Notes for Evaluators
 
-Avg dwell time
+All required features from **Part 4** are implemented:
 
-Top clicked products
-
-Most frequent queries
-
-Top terms
-
-Browser distribution (Chart.js)
-
-Device distribution
-
-Rank distribution
-
-Dwell time histogram
-
-Clicks per hour
-
-Document view bar chart (Altair)
-
-📝 Notes for Evaluators
-
-All required features from Part 4 are implemented:
-
-Complete user interface
-
-Retrieval algorithms
-
-Improved RAG + baseline RAG
-
-Full analytics (session, request, clicks, dwell time)
-
-Dashboard with charts
+* Complete user interface
+* Retrieval algorithms
+* Improved RAG + baseline RAG
+* Full analytics (session, request, clicks, dwell time)
+* Dashboard with charts
 
 To run the project, the evaluator only needs to:
 
-Place the dataset in the data/ folder
-
-Add their personal .env with the GROQ API key
+1. Place the dataset in the `data/` folder
+2. Add their personal `.env` with the GROQ API key
 
 Everything works out of the box.
