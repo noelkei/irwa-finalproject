@@ -23,11 +23,11 @@ mode = "improved"  # default
 for arg in sys.argv[1:]:
     if arg.startswith("--rag-mode="):
         mode = arg.split("=", 1)[1].strip().lower()
-    elif arg.lower() in ("template_rag", "baseline", "professor", "improved"):
+    elif arg.lower() in ("template_rag", "template", "baseline", "professor", "improved"):
         mode = arg.lower()
 
 # Normalize modes
-if mode in ("template_rag", "baseline", "professor"):
+if mode in ("template_rag", "baseline", "professor", "template"):
     RAGGenerator.MODE = "template_rag"
     print("➡️  Using BASELINE RAG (professor version)")
 else:
