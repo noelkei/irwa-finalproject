@@ -1,15 +1,34 @@
 {% extends "base.html" %}
 {% block page_title %}{{ page_title }}{% endblock %}
 {% block content %}
-    <h2>Quick Stats</h2>
-    <h4>Clicked docs:</h4>
+<h2>Quick Stats</h2>
 
-    {% for doc in clicks_data %}
-        <div class="pb-3">
-            <div class="">
-                <span class="text-dark"> ({{ doc.count }} visits) </span> — id: {{ doc.pid }} — {{ doc.title }} - {{ doc.description }}
-            </div>
-        </div>
-        <hr>
-    {% endfor %}
+<h4>Clicked Documents</h4>
+
+{% for doc in clicks_data %}
+<div class="pb-3">
+    <div>
+        <strong>{{ doc.count }} visits</strong> —
+        id: {{ doc.pid }} —
+        {{ doc.title }} —
+        {{ doc.description }}
+    </div>
+</div>
+<hr>
+{% endfor %}
+
+<h4>Most Recent Click Events</h4>
+{% if recent_clicks %}
+<ul>
+{% for c in recent_clicks %}
+    <li>
+        Session {{ c.session_id }} → PID {{ c.pid }}
+        (rank: {{ c.rank }}, dwell: {{ "%.2f"|format(c.dwell_time) if c.dwell_time else "—" }})
+    </li>
+{% endfor %}
+</ul>
+{% else %}
+<p>No click events recorded yet.</p>
+{% endif %}
+
 {% endblock %}

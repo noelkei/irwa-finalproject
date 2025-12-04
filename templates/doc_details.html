@@ -8,7 +8,13 @@
     <p><img src="{{ doc.images[0] }}" alt="{{ doc.title }}" style="max-width:200px; max-height:200px;"></p>
     {% endif %}
     <p><strong>Brand:</strong> {{ doc.brand if doc.brand else "N/A" }}</p>
-    <p><strong>Category:</strong> {{ doc.category }}{% if doc.sub_category %} &raquo; {{ doc.sub_category }}{% endif %}</p>
+
+    <p><strong>Category:</strong>
+        {{ doc.category }}{% if doc.sub_category %} &raquo; {{ doc.sub_category }}{% endif %}
+    </p>
+
+    <p><strong>Product ID:</strong> {{ doc.pid }}</p>
+
     {% if doc.selling_price or doc.actual_price %}
     <p>
         <strong>Price:</strong>
@@ -16,6 +22,7 @@
         {% if doc.discount %} <small>(Discount: {{ doc.discount }}%)</small>{% endif %}
     </p>
     {% endif %}
+
     {% if doc.average_rating %}
     <p><strong>Average Rating:</strong> {{ doc.average_rating }}/5</p>
     {% endif %}

@@ -1,73 +1,175 @@
 {% extends "base.html" %}
-{% block page_title %}{{ page_title }}{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
 {% block header %}
-    <!-- Load Chart.js for browser usage chart -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.2/chart.min.js"
-            integrity="sha512-tMabqarPtykgDtdtSqCL3uLVM0gS1ZkUAVhRFu1vSEFgvB73niFQWJuvviDyBGBH22Lcau4rHB5p2K2T0Xvr6Q=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.2/chart.min.js"></script>
 {% endblock %}
 {% block content %}
-    <h3>Dashboard</h3>
-    <!-- Top visited products -->
-    <h5>Top Visited Products:</h5>
-    {% if visited_docs and visited_docs|length > 0 %}
-    <ul>
-        {% for doc in visited_docs[:5] %}
-        <li><strong>{{ doc.counter }} views</strong> – {{ doc.description }}</li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p>No products have been viewed yet.</p>
-    {% endif %}
-    <!-- Top search queries -->
-    <h5>Top Search Queries:</h5>
-    {% if top_queries and top_queries|length > 0 %}
-    <ul>
-        {% for query, count in top_queries %}
-        <li>"{{ query }}" – {{ count }} searches</li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p>No queries submitted yet.</p>
-    {% endif %}
-    <!-- Top query terms -->
-    <h5>Top Query Terms:</h5>
-    {% if top_terms and top_terms|length > 0 %}
-    <ul>
-        {% for term, count in top_terms %}
-        <li>{{ term }} – {{ count }}</li>
-        {% endfor %}
-    </ul>
-    {% else %}
-    <p>No significant query term data yet.</p>
-    {% endif %}
-    <!-- Browser usage chart -->
-    <h5>Preferred Browsers:</h5>
-    {% if browser_labels and browser_labels|length > 0 %}
-    <canvas id="browserChart" width="400" height="300"></canvas>
-    <script>
-        const browserData = {
-            labels: {{ browser_labels|tojson }},
-            datasets: [{
-                label: 'Browser Usage',
-                data: {{ browser_counts|tojson }},
-                backgroundColor: [
-                    '#FF6384', '#36A2EB', '#FFCE56', '#8AFFC1', '#C9CBFF', '#FFB1C1'
-                ]
-            }]
-        };
-        const config = {
-            type: 'pie',
-            data: browserData,
-            options: { plugins: { legend: { position: 'bottom' } } }
-        };
-        new Chart(document.getElementById('browserChart'), config);
-    </script>
-    {% else %}
-    <p>No browser data available.</p>
-    {% endif %}
-    <hr>
-    <!-- Embedded chart for document views -->
-    <h5>Document Views Chart:</h5>
-    <iframe src="/plot_number_of_views" width="600" height="400" style="border:none;"></iframe>
+<h3>Dashboard</h3>
+
+<h4>Key Indicators</h4>
+<ul>
+    <li>Total sessions: {{ kpis.total_sessions }}</li>
+    <li>Total requests: {{ kpis.total_requests }}</li>
+    <li>Total clicks: {{ kpis.total_clicks }}</li>
+    <li>Average dwell time (s): {{ "%.2f"|format(kpis.avg_dwell_time) }}</li>
+</ul>
+
+<hr>
+
+<h4>Top Visited Products</h4>
+{% if visited_docs %}
+<ul>
+    {% for item in visited_docs %}
+    <li><strong>{{ item.count }} views</strong> — {{ item.description }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No product views yet.</p>
+{% endif %}
+
+<hr>
+
+<h4>Top Search Queries</h4>
+{% if top_queries %}
+<ul>
+    {% for q,count in top_queries %}
+    <li>{{ q }} — {{ count }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No queries yet.</p>
+{% endif %}
+
+<hr>
+
+<h4>Top Search Terms</h4>
+{% if top_terms %}
+<ul>
+    {% for t,count in top_terms %}
+    <li>{{ t }} — {{ count }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>No query term data.</p>
+{% endif %}
+
+<hr>
+
+<h4>Browser Usage</h4>
+{% if browser_labels %}
+<canvas id="browserChart"></canvas>
+<script>
+new Chart(document.getElementById('browserChart'), {
+    type: 'pie',
+    data: {
+        labels: {{ browser_labels|tojson }},
+        datasets: [{
+            data: {{ browser_counts|tojson }},
+            backgroundColor: ['#ff6384','#36a2eb','#ffce56','#8affc1','#c9cbff','#ffb1c1']
+        }]
+    }
+});
+</script>
+{% else %}
+<p>No browser info.</p>
+{% endif %}
+
+<hr>
+
+<h4>Device Types</h4>
+{% if device_labels %}
+<canvas id="deviceChart"></canvas>
+<script>
+new Chart(document.getElementById('deviceChart'), {
+    type: 'pie',
+    data: {
+        labels: {{ device_labels|tojson }},
+        datasets: [{
+            data: {{ device_counts|tojson }},
+            backgroundColor: ['#6495ED','#FFD700']
+        }]
+    }
+});
+</script>
+{% else %}
+<p>No device info.</p>
+{% endif %}
+
+<hr>
+
+<!-- ⭐ NEW: Ranking distribution of clicked documents -->
+<h4>Click Ranking Distribution</h4>
+{% if click_rank_labels %}
+<canvas id="rankChart"></canvas>
+<script>
+new Chart(document.getElementById('rankChart'), {
+    type: 'bar',
+    data: {
+        labels: {{ click_rank_labels|tojson }},
+        datasets: [{
+            label: 'Clicks by rank',
+            data: {{ click_rank_counts|tojson }},
+            backgroundColor: '#36A2EB'
+        }]
+    },
+    options: { scales: { y: { beginAtZero: true } } }
+});
+</script>
+{% else %}
+<p>No rank data yet.</p>
+{% endif %}
+
+<hr>
+
+<!-- ⭐ NEW: Dwell time distribution -->
+<h4>Dwell Time Distribution (seconds)</h4>
+{% if dwell_labels %}
+<canvas id="dwellChart"></canvas>
+<script>
+new Chart(document.getElementById('dwellChart'), {
+    type: 'bar',
+    data: {
+        labels: {{ dwell_labels|tojson }},
+        datasets: [{
+            label: 'Dwell time (s)',
+            data: {{ dwell_counts|tojson }},
+            backgroundColor: '#FF9800'
+        }]
+    },
+    options: { scales: { y: { beginAtZero: true } } }
+});
+</script>
+{% else %}
+<p>No dwell time recorded yet.</p>
+{% endif %}
+
+<hr>
+
+<!-- ⭐ NEW: Clicks per hour -->
+<h4>Clicks per Hour of Day</h4>
+{% if click_hour_labels %}
+<canvas id="hourChart"></canvas>
+<script>
+new Chart(document.getElementById('hourChart'), {
+    type: 'line',
+    data: {
+        labels: {{ click_hour_labels|tojson }},
+        datasets: [{
+            label: 'Clicks',
+            data: {{ click_hour_counts|tojson }},
+            borderColor: '#4CAF50',
+            fill: false
+        }]
+    }
+});
+</script>
+{% else %}
+<p>No click-hour data yet.</p>
+{% endif %}
+
+<hr>
+
+<h4>Document Views Chart</h4>
+<iframe src="/plot_number_of_views" width="600" height="400" style="border:none;"></iframe>
+
 {% endblock %}
